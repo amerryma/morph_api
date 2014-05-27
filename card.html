@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Card</title>
+</head>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<script src="jquery.ui.touch-punch.min.js"></script>
+<style type="text/css">
+	* {
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+    	cursor:default;
+	}
+	@font-face {
+		font-family: KingthingsFoundation;
+		src: url(Kingthings_Foundation.ttf);
+		font-weight:400;
+	}
+	div {
+		position: absolute;
+	}
+	.cardBackground {
+		position: relative;
+		float:left;
+		margin: 10px;
+		width: 223px;
+		height: 325px;
+		background-color: rgb(220, 220, 220);
+		border: solid 2px rgb(75,75,75);
+		border-radius: 10px;
+		background-image: url(backgroundlight.png);
+		box-shadow: 5px 5px 5px rgba(200,200,200,200);
+	}
+	#line1 {
+		width: 100%;
+		height: 2px;
+		top: 30px;
+		background-color: rgb(75,75,75);
+	}
+	.centerdiv {
+		width: 93%;
+		height: 97%;
+	    top:0;
+	    bottom: 0;
+	    left: 0;
+	    right: 0;
+
+	    margin: auto;
+	    font-family: KingthingsFoundation;
+	}
+	#power {
+		float: left;
+	}
+	#defense {
+		float: right;
+	}
+	.red {
+		color: rgb(255,0,0);
+	}
+	.green {
+		color: rgb(0,255,0);
+	}
+	.gold {
+		color: #EAC117;
+	}
+	span {
+		text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+	}
+	#nameText {
+		top: 60px;
+    	font-size: 12pt;
+	}
+	#art {
+		margin-top: 60px;
+		width: 192px;
+		height: 108px;
+		box-shadow: 2px 2px 1px #555;
+		overflow:hidden;
+		position:relative;
+	}
+	#speed {
+		margin-top: 175px;
+		margin-left: 10px;
+	}
+	.speedBall {
+		width: 12px;
+		height: 12px;
+		background-color: rgb(120, 228, 137);
+		border-radius: 10px;
+		border: solid 1px black;
+		text-align: center;
+		position: relative;
+		display: inline-block;
+		font-size: 8pt;
+	}
+	#description {
+		margin-top: 180px;
+	}
+	#rarityDiv {
+		margin-top: 308px;
+		width: 98%;
+	}
+	#rarity {
+		float: right;
+	}
+	#type {
+		float: left;
+	}
+	#artwork {
+		display: block;
+		width: 100%;
+		height: auto;
+		margin-top: -40px;
+	}
+</style>
+<script type="text/javascript">
+	$(function() {
+		$.post('morphapi.php', { "f": "getDeck" },
+			function(obj) {
+				for(var i in obj) {
+					var speedStr = "";
+					var speed = parseInt(obj[i]["speed"]);
+					if (speed == -1) {
+						speedStr += '<div class="speedBall">&#8734;</div>';
+					} else {
+						for (var j = 0; j < parseInt(obj[i]["speed"]); j++) {
+							speedStr += '<div class="speedBall">S</div>';
+						};
+					}
+					var powerStr = "";
+					var power = parseInt(obj[i]["power"]);
+					if (power == -1) {
+						powerStr += "&#8734;";
+					} else {
+						powerStr += power;
+					}
+					var rarityStr = "";
+					var rarity = parseInt(obj[i]["rarity"]);
+					switch(rarity) {
+						case 0:
+							rarityStr = "&#8226;";
+							break;
+						case 1:
+							rarityStr = "&#9830;";
+							break;
+						case 2:
+							rarityStr = "&#9733;";
+							break;
+						case 3:
+							rarityStr = "&#9733;&#9733;";
+							break;
+						default:
+							rarityStr = "?";
+							break;
+					}
+					var typeStr = "";
+					var type = parseInt(obj[i]["type"]);
+					switch(type) {
+						case 0:
+							typeStr = "SPECIAL";
+							break;
+						case 1:
+							typeStr = "MORPH";
+							break;
+						case 2:
+							typeStr = "WALL";
+							break;
+						case 3:
+							typeStr = "SPELL";
+							break;
+						case 4:
+							typeStr = "QUICKSPELL";
+							break;
+						case 5:
+							typeStr = "ENVIRONMENT";
+							break;
+						case 6:
+							typeStr = "HELPER";
+							break;
+						default:
+							typeStr = "?";
+							break;
+					}
+
+					console.log(obj[i]);
+					htmlStr ='<div class="cardBackground">'
+							+'	<div class="centerdiv">'
+							+'		<span id="power"><span class="red">P ' + powerStr + '</span></span>'
+							+'		<span id="defense"><span class="green">D ' + obj[i]["defense"] + '</span></span>'
+							+'	</div>'
+							+'	<div id="line1"></div>'
+							+'	<div class="centerdiv" id="nameText"><span class="gold">' + obj[i]["name"] + '</span></div>'
+							+'	<div class="centerdiv" id="art"><img id="artwork">art goes here</img></div>'
+							+'	<div class="centerdiv" id="speed">'
+							+ speedStr
+							+'	</div>'
+							+'	<div class="centerdiv" id="description">'
+							+'		<p>' + obj[i]["description"] + '</p>'
+							+'	</div>'
+							+'	<div class="centerdiv" id="rarityDiv"><span id="type" class="gold">' + typeStr + '</span><span id="rarity" class="gold">' + rarityStr + '</span></div>'
+							+'</div>';
+					$("body").append(htmlStr);
+				}
+				$(".cardBackground").draggable();
+			}, "json"
+		);
+	});
+</script>
+<body>
+</body>
+</html>
